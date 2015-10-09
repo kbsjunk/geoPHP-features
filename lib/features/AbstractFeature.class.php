@@ -13,7 +13,7 @@ abstract class AbstractFeature
 		$args = func_get_args();
 
 		$format = array_shift($args);
-		$type_map = GeoPHPFeatures::getAdapterMap();
+		$type_map = geoPHPFeatures::getAdapterMap();
 		$processor_type = $type_map[$format];
 		$processor = new $processor_type();
 

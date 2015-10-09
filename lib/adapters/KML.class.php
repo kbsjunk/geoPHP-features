@@ -66,7 +66,7 @@ class KML extends FeatureAdapter
     $features = [];
     $properties = [];
     $id = null;
-    $geom_types = GeoPHP::geometryList();
+    $geom_types = geoPHP::geometryList();
     $placemark_elements = $this->xmlobj->getElementsByTagName('placemark');
     if ($placemark_elements->length) {
       foreach ($placemark_elements as $placemark) {

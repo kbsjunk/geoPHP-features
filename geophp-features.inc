@@ -1,17 +1,30 @@
 <?php
 
-namespace GeoPHPFeatures;
+// Adapters
+include_once("lib/adapters/FeatureAdapter.class.php"); // Abtract class
+include_once("lib/adapters/GeoJSON.class.php");
+// include_once("lib/adapters/WKT.class.php");
+// include_once("lib/adapters/EWKT.class.php");
+// include_once("lib/adapters/WKB.class.php");
+// include_once("lib/adapters/EWKB.class.php");
+include_once("lib/adapters/KML.class.php");
+// include_once("lib/adapters/GPX.class.php");
+// include_once("lib/adapters/GeoRSS.class.php");
+// include_once("lib/adapters/GoogleGeocode.class.php");
+// include_once("lib/adapters/GeoHash.class.php");
+// Geometries
+include_once("lib/features/AbstractFeature.class.php"); // Abstract class
+include_once("lib/features/Feature.class.php");
+include_once("lib/features/FeatureCollection.class.php");
 
-use GeoPHP\GeoPHP;
-
-class GeoPHPFeatures
+class geoPHPFeatures
 {
 
  static function version() {
     return '0.1';
   }
 
-  // GeoPHPFeatures::load($data, $type, $other_args);
+  // geoPHPFeatures::load($data, $type, $other_args);
   // if $data is an array, all passed in values will be combined into a single geometry
   static function load() {
     $args = func_get_args();
@@ -19,7 +32,7 @@ class GeoPHPFeatures
     $data = array_shift($args);
     $type = array_shift($args);
 
-    $type_map = GeoPHPFeatures::getAdapterMap();
+    $type_map = geoPHPFeatures::getAdapterMap();
 
     // Auto-detect type if needed
     if (!$type) {
@@ -28,7 +41,7 @@ class GeoPHPFeatures
         if ($data instanceOf Feature) return $data;
       }
       
-      $detected = GeoPHP::detectFormat($data);
+      $detected = geoPHP::detectFormat($data);
       if (!$detected) {
         return FALSE;
       }
@@ -39,10 +52,10 @@ class GeoPHPFeatures
       $args = $format;
     }
 
-    $processor_type = 'GeoPHPFeatures\\Adapters\\'.$type_map[$type];
+    $processor_type = $type_map[$type];
 
     if (!$processor_type) {
-      throw new Exception('GeoPHP could not find an adapter of type '.htmlentities($type));
+      throw new Exception('geoPHP could not find an adapter of type '.htmlentities($type));
     }
 
     $processor = new $processor_type();
@@ -58,14 +71,14 @@ class GeoPHPFeatures
       // foreach ($data as $item) {
       //   $geoms[] = call_user_func_array(array($processor, "read"), array_merge(array($item), $args));
       // }
-      // $result = GeoPHPFeatures::geometryReduce($geoms);
+      // $result = geoPHPFeatures::geometryReduce($geoms);
     }
 
     return $result;
   }
 
   static function getAdapterMap() {
-    return GeoPHP::getAdapterMap();
+    return geoPHP::getAdapterMap();
   }
 
 }
