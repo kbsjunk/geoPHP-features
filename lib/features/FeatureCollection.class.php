@@ -11,7 +11,7 @@ class FeatureCollection extends AbstractFeature
 
 	protected $id;
 
-	public function __construct($features = [], $properties = [], $id = null)
+	public function __construct($features = [], $properties = [], $id = "")
 	{
 
 		$this->setFeatures($features);

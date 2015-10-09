@@ -28,7 +28,7 @@ class KMLFeatures extends FeatureAdapter
       $this->namespace = $namespace;
       $this->nss = $namespace.':';
     }
-    return $this->featureToKML($feature);
+    return $this->featureCollectionToKML($feature);
   }
 
   public function featureFromText($text) {
@@ -65,9 +65,10 @@ class KMLFeatures extends FeatureAdapter
   protected function featureFromXML() {
     $features = [];
     $properties = [];
-    $id = null;
+    $id = "";
     $geom_types = geoPHP::geometryList();
     $placemark_elements = $this->xmlobj->getElementsByTagName('placemark');
+
     if ($placemark_elements->length) {
       foreach ($placemark_elements as $placemark) {
 
@@ -77,13 +78,34 @@ class KMLFeatures extends FeatureAdapter
           // Node names are all the same, except for MultiGeometry, which maps to GeometryCollection
           $node_name = $child->nodeName == 'multiGeometry' ? 'geometrycollection' : $child->nodeName;
           
-          if (!array_key_exists($node_name, $geom_types)) {
-            $properties[$child->nodeName] = $child->textContent;
-          }
-          else
+          if (array_key_exists($node_name, $geom_types))
           {
-            $adapter = new KMLAdapter;
-            $geometry = $adapter->read($child->saveXML());
+            $adapter = new KML;
+            $geometry = $adapter->read($child->ownerDocument->saveXML($child));
+          }
+          elseif ($node_name == 'extendeddata')
+          {
+            foreach ($child->childNodes as $data) {
+              if ($data->nodeName != '#text') {
+                if ($data->nodeName == 'data') {
+                  $value = $data->getElementsByTagName('value')[0];
+                  $properties[$data->getAttribute('name')] = preg_replace('/\n\s+/',' ',trim($value->textContent));
+                }
+                elseif ($data->nodeName == 'schemadata')
+                {
+                  foreach ($data->childNodes as $schemadata) {
+                    if ($schemadata->nodeName != '#text') {
+                      $properties[$schemadata->getAttribute('name')] = preg_replace('/\n\s+/',' ',trim($schemadata->textContent));
+                    }
+                  }
+                }
+
+              }
+            }
+          }
+          elseif ($node_name != '#text')
+          {
+            $properties[$child->nodeName] = preg_replace('/\n\s+/',' ',trim($child->textContent));
           }
 
         }
@@ -91,15 +113,17 @@ class KMLFeatures extends FeatureAdapter
         $feature = new Feature($geometry, $properties, $id);
 
         $features[] = $feature;
+
       }
     }
     else {
-      $adapter = new KMLAdapter;
-      return $adapter->read($this->xmlobj->saveXML());
+      throw new Exception("Cannot Read Feature From KML");
     }
-    // $id = null;// $properties = [];
 
-    $collection = new FeatureCollection($features);//, $properties, $id);
+    $id = "";
+    $properties = [];
+
+    $collection = new FeatureCollection($features, $properties, $id);
 
   return $collection;
 }
@@ -131,45 +155,47 @@ protected function parseGeometryCollection($xml) {
   return new GeometryCollection($components);
 }
 
-private function featureToKML($geom) {
-  $type = strtolower($geom->getGeomType());
-  switch ($type) {
-    case 'point':
-    return $this->pointToKML($geom);
-    break;
-    case 'linestring':
-    return $this->linestringToKML($geom);
-    break;
-    case 'polygon':
-    return $this->polygonToKML($geom);
-    break;
-    case 'multipoint':
-    case 'multilinestring':
-    case 'multipolygon':
-    case 'geometrycollection':
-    return $this->collectionToKML($geom);
-    break;
-  }
-}
+private function featureToKML($feature) {
+  $out = '<'.$this->nss.'Placemark>';
+  
+  $out .= '<name>'.$feature->getProperty('name').'</name>';
+  $out .= '<description>'.$feature->getProperty('description').'</description>';
 
-private function pointToKML($geom) {
-  $out = '<'.$this->nss.'Point>';
-  if (!$geom->isEmpty()) {
-    $out .= '<'.$this->nss.'coordinates>'.$geom->getX().",".$geom->getY().'</'.$this->nss.'coordinates>';
+  $out .= $feature->getGeometry()->out('kml');
+
+  if ($feature->getExtendedProperties()) {
+    $out .= '<ExtendedData>';
+    foreach ($feature->getExtendedProperties() as $key => $value) {
+      $out .= '<Data name="'.$key.'">';
+      $out .= '<value>';
+      $out .= $feature->getProperty('name');
+      $out .= '</value>';
+      $out .= '</Data>';
+    }
+    $out .= '</ExtendedData>';
   }
-  $out .= '</'.$this->nss.'Point>';
+
+  $out .= '</'.$this->nss.'Placemark>';
   return $out;
 }
 
-public function collectionToKML($geom) {
-  $components = $geom->getComponents();
-  $str = '<'.$this->nss.'MultiGeometry>';
-  foreach ($geom->getComponents() as $comp) {
-    $sub_adapter = new KML();
-    $str .= $sub_adapter->write($comp);
-  }
+// private function pointToKML($geom) {
+//   $out = '<'.$this->nss.'Point>';
+//   if (!$geom->isEmpty()) {
+//     $out .= '<'.$this->nss.'coordinates>'.$geom->getX().",".$geom->getY().'</'.$this->nss.'coordinates>';
+//   }
+//   $out .= '</'.$this->nss.'Point>';
+//   return $out;
+// }
 
-  return $str .'</'.$this->nss.'MultiGeometry>';
+public function featureCollectionToKML($feature) {
+  $out = '<'.$this->nss.'Folder>';
+  $out .= '<name>'.$feature->getProperty('name').'</name>';
+  $out .= '<description>'.$feature->getProperty('description').'</description>';
+  foreach ($feature->getFeatures() as $comp) {
+    $out .= $this->featureToKML($comp);
+  }
+  return $out .'</'.$this->nss.'Folder>';
 }
 
 }

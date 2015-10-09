@@ -11,7 +11,7 @@ class Feature extends AbstractFeature
 
 	protected $id;
 
-	public function __construct(Geometry $geometry = null, $properties = [], $id = null)
+	public function __construct(Geometry $geometry = null, $properties = [], $id = "")
 	{
 		$this->geometry = $geometry;
 		$this->properties = (array) $properties;

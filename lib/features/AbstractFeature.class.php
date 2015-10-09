@@ -7,7 +7,7 @@ abstract class AbstractFeature
 
 	protected $properties;
 
-	protected $id;
+	protected $id = "";
 
 	public function out() {
 		$args = func_get_args();
@@ -36,6 +36,14 @@ abstract class AbstractFeature
 	public function getProperties()
 	{
 		return $this->properties;
+	}
+
+	public function getExtendedProperties()
+	{
+		$properties = $this->properties;
+		unset($properties['name']);
+		unset($properties['description']);
+		return $properties;
 	}
 
 	public function setProperties(array $properties)

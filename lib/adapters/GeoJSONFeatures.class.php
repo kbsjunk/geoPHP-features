@@ -33,7 +33,7 @@ class GeoJSONFeatures extends FeatureAdapter
       return new FeatureCollection($features, $properties, @$input->id);
     }
 
-    $adapter = new GeoJSONAdapter;
+    $adapter = new GeoJSON;
 
     // Check to see if it's a Feature
     if ($input->type == 'Feature') {
@@ -66,8 +66,8 @@ class GeoJSONFeatures extends FeatureAdapter
     if ($feature instanceof AbstractFeature) {
       if ($feature instanceof FeatureCollection) {
         $feature_array = array();
-        foreach ($feature->getFeatures() as $feature) {
-          $feature_array[] = $this->getArray($feature);
+        foreach ($feature->getFeatures() as $f) {
+          $feature_array[] = $this->getArray($f);
         }
         return array(
           'type'       => 'FeatureCollection',
@@ -86,7 +86,7 @@ class GeoJSONFeatures extends FeatureAdapter
       }
     }
     else {
-      $adapter = new GeoJSONAdapter;
+      $adapter = new GeoJSON;
       return $adapter->write($feature, true);
     }
   }
