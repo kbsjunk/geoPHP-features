@@ -46,3 +46,4 @@ Temporary Items
 /.wk
 *.sublime-project
 *.sublime-workspace
+composer.lock

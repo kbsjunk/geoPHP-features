@@ -2,12 +2,12 @@
 
 // Adapters
 include_once("lib/adapters/FeatureAdapter.class.php"); // Abtract class
-include_once("lib/adapters/GeoJSON.class.php");
+include_once("lib/adapters/GeoJSONFeatures.class.php");
 // include_once("lib/adapters/WKT.class.php");
 // include_once("lib/adapters/EWKT.class.php");
 // include_once("lib/adapters/WKB.class.php");
 // include_once("lib/adapters/EWKB.class.php");
-include_once("lib/adapters/KML.class.php");
+include_once("lib/adapters/KMLFeatures.class.php");
 // include_once("lib/adapters/GPX.class.php");
 // include_once("lib/adapters/GeoRSS.class.php");
 // include_once("lib/adapters/GoogleGeocode.class.php");
@@ -55,7 +55,7 @@ class geoPHPFeatures
     $processor_type = $type_map[$type];
 
     if (!$processor_type) {
-      throw new Exception('geoPHP could not find an adapter of type '.htmlentities($type));
+      throw new Exception('geoPHPFeatures could not find an adapter of type '.htmlentities($type));
     }
 
     $processor = new $processor_type();
@@ -78,7 +78,19 @@ class geoPHPFeatures
   }
 
   static function getAdapterMap() {
-    return geoPHP::getAdapterMap();
+    return array (
+      // 'wkt' =>  'WKT',
+      // 'ewkt' => 'EWKT',
+      // 'wkb' =>  'WKB',
+      // 'ewkb' => 'EWKB',
+      'json' => 'GeoJSONFeatures',
+      'geojson' => 'GeoJSONFeatures',
+      'kml' =>  'KMLFeatures',
+      // 'gpx' =>  'GPX',
+      // 'georss' => 'GeoRSS',
+      // 'google_geocode' => 'GoogleGeocode',
+      // 'geohash' => 'GeoHash',
+    );
   }
 
 }

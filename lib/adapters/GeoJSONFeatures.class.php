@@ -3,7 +3,7 @@
 /**
  * GeoJSON class : a geojson reader/writer.
  */
-class GeoJSON extends FeatureAdapter
+class GeoJSONFeatures extends FeatureAdapter
 {
   /**
    * Given an object or a string, return a Geometry

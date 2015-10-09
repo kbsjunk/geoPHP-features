@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "342cc21216df5dc1f0c78ea3e2d3c4ff",
-    "content-hash": "9b95bd6ad3d1ba1984458df2a8a2307d",
+    "hash": "47407f0056f56241ede8eb78caf3595c",
+    "content-hash": "2a67a4bebd5eb2a18649c96123b31fc4",
     "packages": [
         {
             "name": "phayes/geophp",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/kitbs/geoPHP.git",
-                "reference": "7fc06d7850da16025868d92f945d205bdfcfaada"
+                "url": "https://github.com/phayes/geoPHP.git",
+                "reference": "d7e099a8f4ce23db1d0b1840b1ec984c5d208fb4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kitbs/geoPHP/zipball/7fc06d7850da16025868d92f945d205bdfcfaada",
-                "reference": "7fc06d7850da16025868d92f945d205bdfcfaada",
+                "url": "https://api.github.com/repos/phayes/geoPHP/zipball/d7e099a8f4ce23db1d0b1840b1ec984c5d208fb4",
+                "reference": "d7e099a8f4ce23db1d0b1840b1ec984c5d208fb4",
                 "shasum": ""
             },
             "require-dev": {
@@ -26,10 +26,11 @@
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "GeoPHP\\": "src/"
-                }
+                "classmap": [
+                    "geoPHP.inc"
+                ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "GPL-2 or New-BSD"
             ],
@@ -40,10 +41,7 @@
             ],
             "description": "GeoPHP is a open-source native PHP library for doing geometry operations. It is written entirely in PHP and can therefore run on shared hosts. It can read and write a wide variety of formats: WKT (including EWKT), WKB (including EWKB), GeoJSON, KML, GPX, GeoRSS). It works with all Simple-Feature geometries (Point, LineString, Polygon, GeometryCollection etc.) and can be used to get centroids, bounding-boxes, area, and a wide variety of other useful information.",
             "homepage": "https://github.com/phayes/geoPHP",
-            "support": {
-                "source": "https://github.com/kitbs/geoPHP/tree/master"
-            },
-            "time": "2015-07-03 06:18:21"
+            "time": "2015-06-29 17:47:05"
         }
     ],
     "packages-dev": [

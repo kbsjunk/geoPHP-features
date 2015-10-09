@@ -82,7 +82,7 @@ class KMLFeatures extends FeatureAdapter
           }
           else
           {
-            $adapter = new KML;
+            $adapter = new KMLAdapter;
             $geometry = $adapter->read($child->saveXML());
           }
 
@@ -94,7 +94,7 @@ class KMLFeatures extends FeatureAdapter
       }
     }
     else {
-      $adapter = new KML;
+      $adapter = new KMLAdapter;
       return $adapter->read($this->xmlobj->saveXML());
     }
     // $id = null;// $properties = [];
