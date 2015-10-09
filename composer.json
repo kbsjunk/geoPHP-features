@@ -17,12 +17,6 @@
             "name":"Patrick Hayes"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/kitbs/geoPHP"
-        }
-    ],
     "require": {
         "phayes/geophp": "dev-master"
     },
