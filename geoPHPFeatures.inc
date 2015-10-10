@@ -87,7 +87,7 @@ class geoPHPFeatures
       'geojson' => 'GeoJSONFeatures',
       'kml' =>  'KMLFeatures',
       // 'gpx' =>  'GPX',
-      // 'georss' => 'GeoRSS',
+      'georss' => 'GeoRSSFeatures',
       // 'google_geocode' => 'GoogleGeocode',
       // 'geohash' => 'GeoHash',
     );

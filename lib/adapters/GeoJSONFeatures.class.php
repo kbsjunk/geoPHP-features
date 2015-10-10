@@ -29,7 +29,10 @@ class GeoJSONFeatures extends FeatureAdapter
       foreach ($input->features as $feature) {
         $features[] = $this->read($feature);
       }
-      $properties = isset($input->properties) ? (array) $input->properties : [];
+      $properties = [];
+      if (isset($input->properties)) $properties = array_merge($properties, (array) $input->properties);
+      if (isset($input->metadata)) $properties = array_merge($properties, (array) $input->metadata);
+      // $properties = isset($input->properties) ? (array) $input->properties : [];
       return new FeatureCollection($features, $properties, @$input->id);
     }
 

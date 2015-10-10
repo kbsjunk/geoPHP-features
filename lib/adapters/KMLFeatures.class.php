@@ -33,10 +33,12 @@ class KMLFeatures extends FeatureAdapter
 
   public function featureFromText($text) {
     // Change tags to lower-case
-    preg_match_all('%(</?[^? >]+)%m', $text, $result, PREG_PATTERN_ORDER);
+    preg_match_all('%(</?[^? ><![]+)%m', $text, $result, PREG_PATTERN_ORDER);
     $result = $result[0];
 
     $result = array_unique($result);
+    sort($result);
+    $result = array_reverse($result);
 
     foreach ($result as $search) {
       $replace = mb_strtolower($search, mb_detect_encoding($search));
@@ -45,7 +47,8 @@ class KMLFeatures extends FeatureAdapter
 
     // Load into DOMDocument
     $xmlobj = new DOMDocument();
-    @$xmlobj->loadXML($text);
+    //@
+    $xmlobj->loadXML($text);
     if ($xmlobj === false) {
       throw new Exception("Invalid KML: ". $text);
     }
@@ -103,7 +106,7 @@ class KMLFeatures extends FeatureAdapter
               }
             }
           }
-          elseif ($node_name != '#text')
+          elseif (!in_array($node_name, ['#text', 'lookat', 'style', 'styleurl']))
           {
             $properties[$child->nodeName] = preg_replace('/\n\s+/',' ',trim($child->textContent));
           }
